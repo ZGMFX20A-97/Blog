@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blog.dao.MessageDao">
+
+    <!--メッセージ追加-->
+    <insert id="saveMessage" parameterType="com.blog.entity.Message">
+        insert into t_message (nickname,email,content,avatar,create_time,parent_message_id,admin_message)
+        values (#{nickname},#{email},#{content},#{avatar},#{createTime},#{parentMessageId},#{adminMessage});
+    </insert>
+
+    <!--親クラスメッセージを検索-->
+    <select id="findByParentIdNull" resultType="com.blog.entity.Message">
+        select *
+        from t_message c
+        where c.parent_message_id = #{ParentId}
+        order by c.create_time desc
+    </select>
+
+    <!--一级子クラスメッセージを検索-->
+    <select id="findByParentIdNotNull" resultType="com.blog.entity.Message">
+        select *
+        from t_message c
+        where c.parent_message_id = #{id}
+        order by c.create_time desc
+    </select>
+
+    <!--ホームページおすすめコメント-->
+    <select id="findByIndexParentId" resultType="com.blog.entity.Message">
+        select *
+        from t_message c
+        where c.parent_message_id = #{id}
+        order by c.create_time desc limit 0,3
+    </select>
+
+    <!--二级以上全部の子クラスメッセージを検索-->
+    <select id="findByReplayId" resultType="com.blog.entity.Message">
+        select *
+        from t_message c
+        where c.parent_message_id = #{childId}
+        order by c.create_time desc
+    </select>
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(id) from t_message;
+    </select>
+
+    <!--メッセージ削除-->
+    <delete id="deleteMessage" >
+        delete from t_message where id = #{id}
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <!--標記-->
+    <title th:text="${blog.title}+ ' | ' +#{web_Name}">ブログタイトル</title>
+    <meta name="keywords" th:content="${blog.tagsToNames()}">
+    <meta name="description" th:content="${blog.description} ? ${blog.description}: #{web_Description}">
+    <!--標記-->
+    <div th:replace="/fragments/header :: common-js"></div>
+    <link rel="stylesheet" href="/lib/prism/prism.css" >
+
+    <script type="text/javascript" src="/js/article.js"></script>
+    <script src="/lib/prism/prism.js" ></script>
+</head>
+<body>
+
+
+<div id="workingArea">
+
+    <div th:replace="/fragments/header :: menu"></div>
+    <div class="pageHeadContainer">
+        <img src="/images/KakuGen.jpg" th:src="${blog.firstPicture}" class="ui image backgroundImg">
+        <div class="backgroundLayout">
+            <div class="myInfoDiv" align="center">
+                <div>
+                    <span class="name" th:text="#{web_Name}"></span>
+                </div>
+                <div class="word" th:text="${blog.description}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="articleContent">
+        <div class="ui raised teal segment">
+            <div class="ui vertical stackable grid container">
+                <div class="row">
+                    <h4 class="ui header articleTitle" th:text="${blog.title}">article.articleTitle</h4>
+                </div>
+                <div class="row">
+                    <div class="aticleInfo">
+                        <span><i class="ui user circle icon"></i>作者: <span class="author" th:text="${blog.user.nickname}">article.author</span></span>
+                        <span><i class="ui clock outline icon"></i>発表时间: <span class="publishDate" th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}">{article.createDate | dateFormatFilter}</span></span>
+                        <span><i class="ui eye icon"></i><span class="viewNumber" th:text="${blog.views}">article.viewNumber</span></span>
+                        <a class="ui blue button originalDesign" th:text="${blog.flag} ? 'オリジナル' : '転載'"> 'オリジナル': '転載'}}</a>
+                    </div>
+                </div>
+                <div class="row article">
+                    <div th:utext="${blog.content}" class="typo ui container" id="blogContent">
+
+                    </div>
+                </div>
+                <!--タグ-->
+                <div class="m-padded-lr-responsive">
+                    <div class="ui basic teal left pointing label" th:each="tag : ${blog.tags}" th:text="${tag.name}">
+
+                    </div>
+                </div>
+
+                <div class="row typo" >
+                    <blockquote>
+                        <p>作者： <span th:text="${blog.user.nickname}">article.author</span></p>
+                        <p>Github： <span >CatInPajamas</span></p>
+                        <p>CopyRight： <span>本ブログは特別な許諾以外，転載禁止です！</span></p>
+                    </blockquote>
+                </div>
+                <div class="row">
+                    <h4 class="end">ボーダーライン</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${blog.commentable}" class="commentContent" >
+        <div id="comments" ></div>
+    </div>
+    <button id="toTop" class="circular ui icon button" style="display: none;">
+        <i class="ui caret up icon"></i>
+    </button>
+
+</div>
+
+<input type="hidden" th:value="#{valine_AppID}" id="data_1">
+<input type="hidden" th:value="#{valine_AppKey}" id="data_2">
+<div th:replace="/fragments/footer :: footer-content"></div>
+<script src='/js/Valine.min.js'></script>
+
+    <script type="text/javascript"  th:inline="javascript">
+    const data_1 = $("#data_1").val();
+    const data_2 = $("#data_2").val();
+    new Valine({
+        el: '#comments',
+        appId: data_1,
+        appKey: data_2
+    })
+
+</script>
+
+
+
+</body>
+</html>

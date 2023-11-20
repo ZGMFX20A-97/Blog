@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <!-- Standard Meta モバイル端末に適応 -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title th:text="'エラーメッセージ——'+#{web_Name}"></title>
+    <meta name="keywords" th:content="#{web_Keywords}">
+    <meta name="description" th:content="#{web_Description}">
+    <div th:replace="/fragments/header :: common-js"></div>
+
+</head>
+
+<body>
+
+<div id="workingArea">
+    <div th:replace="/fragments/header :: menu"></div>
+    <br>
+    <br>
+    <div class="errorContent">
+        <div class="ui container">
+            <div class="ui raised  segment  errorBackground error">
+                <div class="main">
+                    <h1 class="status">
+                        Bug
+                    </h1>
+                    <p>
+					<span>
+						 Bugかよ，What the hell?
+					</span>
+                        <span class="error">
+						?
+					</span>
+                    </p>
+                    <p class="message">
+                        庄司にフィードバックしようぜ
+                    </p>
+                    <div align="center">
+                        <a href="/" class="ui teal button">
+                            戻る
+                        </a>
+                    </div>
+                    <div class="icons">
+                        <p>
+                            Follow us on:
+                        </p>
+                        <ul>
+                            <li>
+                                <a id="instagram" class="ui instagram circular icon button">
+                                    <i class="instagram icon">
+                                    </i>
+                                </a>
+                            </li>
+                            <li>
+                                <a id="facebook" class="ui facebook circular icon button">
+                                    <i class="facebook icon">
+                                    </i>
+                                </a>
+                            </li>
+                            <li>
+                                <a th:href="#{web_Github}" target="_blank" data-tooltip="クリックしてgithub"
+                                   data-position="bottom center" data-inverted="" class="ui circular icon button">
+                                    <i class="github icon">
+                                    </i>
+                                </a>
+                            </li>
+                            <div id="instagramPic" class="ui flowing popup transition hidden">
+                                <img alt="instagram" src="/images/aboutMe/instagram.png" th:src="#{web_instagram}" class="ui small rounded image">
+                            </div>
+                            <div id="facebookPic" class="ui flowing popup transition hidden">
+                                <img alt="facebook" src="/images/aboutMe/facebook.png" th:src="#{web_facebook}" class="ui small rounded image">
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div th:utext="'&lt;!--'" th:remove="tag"></div>
+        <div th:utext="'Failed Request URL : ' + ${url}" th:remove="tag"></div>
+        <div th:utext="'Exception message : ' + ${exception.message}" th:remove="tag"></div>
+        <ul th:remove="tag">
+            <li th:each="st : ${exception.stackTrace}" th:remove="tag"><span th:utext="${st}" th:remove="tag"></span></li>
+        </ul>
+        <div th:utext="'--&gt;'" th:remove="tag"></div>
+    </div>
+    <div th:replace="/fragments/footer :: footer-content"></div>
+</div>
+
+
+
+
+
+
+<script type="text/javascript" src="/js/error.js" th:src="@{/js/error.js}"></script>
+</body>
+</html>

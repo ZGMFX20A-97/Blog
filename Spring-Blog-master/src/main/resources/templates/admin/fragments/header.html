@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header id="header" class="header" th:fragment="header">
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="keywords" th:content="#{web_Keywords}" />
+        <meta name="author" th:content="#{web_Name}" />
+        <meta name="robots" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="" />
+        <meta name="format-detection" content="telephone=no">
+        <!-- PAGE TITLE HERE -->
+        <title th:text="#{web_Name} + ' | ブログ管理システム'">ブログ管理システム</title>
+        <!-- FAVICONS ICON -->
+        <link rel="shortcut icon" type="image/png" th:href="#{web_Ico}" />
+        <link href="/backend/vendor/owl-carousel/owl.carousel.css" rel="stylesheet">
+        <link href="/backend/vendor/jquery-nice-select/css/nice-select.css" rel="stylesheet">
+        <!-- Style css -->
+        <link href="/backend/css/style.css" rel="stylesheet">
+</header>
+</body>
+</html>

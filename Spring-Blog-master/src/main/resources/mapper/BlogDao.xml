@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.dao.BlogDao">
+
+    <resultMap id="blog" type="Blog">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="flag" column="flag"/>
+        <result property="views" column="views"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="typeId" column="type_id"/>
+        <result property="firstPicture" column="first_picture"/>
+        <result property="shareStatement" column="share_statement"/>
+        <result property="published" column="published"/>
+        <result property="appreciation" column="appreciation"/>
+        <result property="commentable" column="commentable"/>
+        <result property="description" column="description"/>
+        <result property="recommend" column="recommend"/>
+        <result property="createTime" column="create_time"/>
+        <result property="typeId" column="type_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="tagIds" column="tag_ids"/>
+        <association property="type" javaType="Type">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+        <association property="user" javaType="User">
+            <id property="id" column="uid"/>
+            <result property="nickname" column="nickname"/>
+            <result property="username" column="username"/>
+            <result property="email" column="email"/>
+            <result property="avatar" column="avatar"/>
+        </association>
+        <collection property="tags" ofType="Tag">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </collection>
+    </resultMap>
+    <!--管理システムで文章を削除-->
+    <delete id="deleteBlog">
+        delete from t_blog where id = #{id}
+    </delete>
+
+    <!--ホームページ最新文章の表示-->
+    <select id="getIndexBlog" resultMap="blog">
+        select b.id, b.title, b.first_picture,b.flag, b.views, b.update_time, b.description,
+        t.name typeName, t.id typeId,
+        u.nickname,u.avatar
+        from t_blog b, t_type t, t_user u
+        where b.type_id = t.id and  u.id = b.user_id order by b.update_time desc
+    </select>
+
+    <!--管理画面で文章リスト表示-->
+    <select id="getAllBlog" resultMap="blog">
+        select b.id, b.title, b.update_time, b.recommend, b.type_id, b.published,
+               t.id typeId, t.name typeName
+        from t_blog b, t_type t
+        where b.type_id = t.id order by b.update_time desc
+    </select>
+
+    <!--カテゴリごとの文章を取得-->
+    <select id="getByTypeId" resultMap="blog">
+        select b.id, b.title, b.first_picture, b.views, b.update_time, b.description,
+        t.name typeName, t.id typeId,
+        u.nickname,u.avatar
+        from t_blog b, t_type t, t_user u
+        where b.type_id = t.id and u.id = b.user_id and b.type_id = #{typeId} order by b.update_time desc
+    </select>
+
+    <!--タグで文章を取得-->
+    <select id="getByTagId" resultMap="blog">
+        select b.id, b.title, b.first_picture, b.views, b.update_time, b.description,
+        t.name typeName, t.id typeId,
+        t1.name tagName, t1.id tagId,
+        u.nickname,u.avatar
+        from t_blog b, t_type t, t_user u, t_blog_tags tb, t_tag t1
+        where b.type_id = t.id and u.id = b.user_id and tb.blog_id = b.id and tb.tag_id = t1.id and t1.id = #{tagId}
+        order by b.update_time desc
+    </select>
+
+    <!--トレンド文章-->
+    <select id="getHotBlog" resultMap="blog">
+        select id, title ,first_picture , description ,views from t_blog order by views desc limit 0,4
+    </select>
+
+    <!--フロント画面でのおすすめ文章-->
+    <select id="getAllRecommendBlog" resultMap="blog">
+        select id, title, recommend ,first_picture ,views from t_blog order by update_time desc limit 0,3
+    </select>
+
+    <!--管理画面で文章を取得-->
+    <select id="getBlog" resultMap="blog">
+        select b.id, b.published, b.flag, b.title, b.content, b.type_id,
+         b.tag_ids, b.first_picture, b.description, b.recommend,
+         b.share_statement, b.appreciation, b.commentable
+        from t_blog b  where  b.id = #{id} ;
+    </select>
+
+    <!--文章の詳細画面-->
+    <select id="getDetailedBlog" resultMap="blog">
+        select b.id, b.first_picture, b.flag, b.title, b.content, b.views,
+        b.update_time,b.commentable, b.share_statement, b.appreciation,b.description,
+        u.nickname,u.avatar,
+        tag.id tagid, tag.name tagname
+        from t_blog b, t_user u, t_tag tag, t_blog_tags tb
+        where b.user_id = u.id and tb.blog_id = b.id and tb.tag_id = tag.id and  b.id = #{id}
+    </select>
+
+    <!--文章検索-->
+    <select id="getSearchBlog" resultMap="blog">
+        <bind name="pattern" value="'%' + query + '%'" />
+        select b.id, b.title, b.first_picture, b.views, b.update_time, b.description,
+        t.name typename,
+        u.nickname, u.avatar
+        from t_blog b, t_type t, t_user u
+        where b.type_id = t.id and  u.id = b.user_id and (b.title like #{pattern} or b.content like  #{pattern})
+        order by b.update_time desc
+    </select>
+
+    <select id="searchAllBlog" parameterType="Blog" resultMap="blog">
+        <bind name="pattern" value="'%' + title + '%'" />    /*あいまい検索*/
+        select b.id, b.title, b.update_time, b.recommend, b.published, b.type_id, t.id, t.name
+        from t_blog b ,t_type t
+        <where>
+            <if test="1 == 1">
+                b.type_id = t.id    /*ブログカテゴリid=カテゴリid*/
+            </if>
+            <if test="typeId != null">
+                and b.type_id = #{typeId}       /*ブログカテゴリで検索*/
+            </if>
+            <if test="recommend != null">
+                and b.recommend = #{recommend}   /*おすすめブログを検索*/
+            </if>
+            <if test="title != null">
+                and b.title like #{pattern}   /*ブログタイトルであいまい検索*/
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBlog" parameterType="Blog">
+        update t_blog set published = #{published},flag = #{flag} ,
+        title = #{title}, content = #{content}, type_id = #{typeId}, tag_ids = #{tagIds},
+        first_picture = #{firstPicture} , description = #{description} , recommend = #{recommend} ,
+        share_statement = #{shareStatement}, appreciation = #{appreciation},
+        commentable = #{commentable} ,update_time = #{updateTime} where id = #{id};
+    </update>
+
+    <!--useGeneratedKeys="true"；インクリメント主キーを使ってkeypropertyを取得
+        keyProperty；主キーの属性を指定する。mybatisが主キー値を取得後，この值をjavaBeanのどっかのフィールドにインジェクションする
+    -->
+    <insert id="saveBlog" parameterType="Blog" useGeneratedKeys="true" keyProperty="id">
+        insert into t_blog (title, content, first_picture, flag,
+        views, appreciation, share_statement, commentable,published,
+        recommend, create_time, update_time, type_id, tag_ids, user_id, description)
+        values (#{title}, #{content}, #{firstPicture}, #{flag}, #{views}, #{appreciation},
+        #{shareStatement}, #{commentable}, #{published}, #{recommend}, #{createTime},
+        #{updateTime}, #{typeId}, #{tagIds}, #{userId}, #{description});
+    </insert>
+
+    <insert id="saveBlogAndTag" parameterType="BlogAndTag">
+        insert into t_blog_tags (tag_id, blog_id) values (#{tagId},#{blogId});
+    </insert>
+
+
+    <select id="findGroupYear" resultType="String">
+        select DATE_FORMAT(b.update_time, '%Y') from t_blog b order by b.update_time desc
+    </select>
+
+    <select id="findByYear" resultMap="blog">
+        select b.title, b.update_time, b.id, b.flag
+        from t_blog b
+        where DATE_FORMAT(b.update_time, "%Y") = #{year}
+    </select>
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(id) from t_blog;
+    </select>
+    <select id="getViews" resultType="java.lang.Integer">
+        select sum(views) from t_blog;
+    </select>
+    <select id="getAvgViews" resultType="java.lang.Integer">
+        select avg(views) from t_blog;
+    </select>
+
+    <!--文章アクセス数のインクリメント-->
+    <update id="updateViews" >
+        update t_blog b set b.views = #{value} where b.id = #{id}
+    </update>
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <!-- Standard Meta モバイル設備に適応 -->
+    <meta charset="utf-8" />
+    <title th:text="'メッセージボード | '+ #{web_Name}"></title>
+    <meta name="keywords" th:content="#{web_Keywords}">
+    <meta name="description" th:content="#{web_Description}">
+
+    <script src="/js/bluebird.min.js"></script>
+    <script src="/js/whatwg-fetch@2.0.3_fetch.js"></script>
+    <!--End-->
+    <script>
+        fetch('https://v1.hitokoto.cn/?max_length=21')
+            .then(function (res){
+                return res.json();
+            })
+            .then(function (data) {
+                const hitokoto = document.getElementById('hitokoto');
+                hitokoto.innerText =data.hitokoto;
+            })
+            .catch(function (err) {
+                console.error(err);
+            })
+    </script>
+    <div th:replace="/fragments/header :: common-js"></div>
+
+</head>
+<body>
+<!--nav-->
+<nav class="gird-header">
+    <div th:replace="/fragments/header :: menu">
+    </div>
+    <div class="pageHeadContainer">
+        <img src="../static/images/background/background5.jpg"  th:src="#{message_Background}" class="ui image backgroundImg">
+        <div class="backgroundLayout">
+            <div class="myInfoDiv" align="center">
+                <div>
+                    <span class="name" th:text="#{web_Name}">ブログ名</span>
+                </div>
+                <div class="word">
+                    世界について書かれた本なんて俺は読まないね<br>
+                    世界に飛び出して、自分の目で見るのさ
+                </div>
+        </div>
+    </div>
+</nav>
+
+<br>
+<br>
+<br>
+<!--真ん中の内容-->
+<div id="waypoint" class="m-margin- animated fadeIn">
+    <div class="ui container m-opacity box-shadow-max">
+        <!--                新しいメッセージ-->
+        <div id="message-form" class="ui form">
+            <input type="hidden" name="parentMessage.id" value="-1">
+            <!--                    メッセージエリア-->
+            <div class="field">
+                <textarea name="content" placeholder="メッセージを入力してください..."></textarea>
+            </div>
+            <div class="ui grid">
+                <!--                    名前を入力-->
+                <div class="five wide column">
+                    <div class="field m-mobile-wide m-margin-bottom-small">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            <input type="text" name="nickname" placeholder="Id" th:value="${session.user} == null ? '' : ${session.user.nickname}">
+                        </div>
+                    </div>
+                </div>
+
+                <!--                        メールアドレス入力-->
+                <div class="five wide column">
+                    <div class="field m-mobile-wide m-margin-bottom-small">
+                        <div class="ui left icon input">
+                            <i class="mail icon"></i>
+                            <input type="text" name="email" placeholder="Email" th:value="${session.user} == null ? '' :  ${session.user.email}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right aligned six wide column">
+                    <div class="field m-mobile-wide m-margin-bottom-small">
+                        <button id="messagepost-btn" type="button" class="ui teal button m-mobile-wide"><i class="edit icon"></i>投稿</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <!--メッセージエリア-->
+        <div class="ui bottom attached m-margin-top">
+            <div id="message-container" class="ui teal segment">
+                <div th:fragment="messageList">
+                    <div class="ui threaded comments" style="max-width: 100%;">
+                        <h3 class="ui dividing header">メッセージ</h3>
+                        <div class="comment" th:each="message : ${messages}">
+                            <a class="avatar">
+                                <img src="/image/me.jpg" th:src="${message.avatar}">
+                            </a>
+                            <div class="content">
+                                <a class="author">
+                                    <span th:text="${message.nickname}">Matt</span>
+                                    <div class="ui mini basic teal left pointing label m-padded-mini" th:if="${message.adminMessage}">タマ</div>
+                                </a>
+                                <div class="metadata">
+                                    <span class="date" th:text="${#dates.format(message.createTime,'yyyy-MM-dd HH:mm')}">本日午後 05:42</span>
+                                </div>
+                                <div class="text" th:text="${message.content}">よっしゃー！ </div>
+                                <div class="actions">
+                                    <a class="reply" data-messageid="1" data-messagenickname="Matt" th:attr="data-messageid=${message.id},data-messagenickname=${message.nickname}" onclick="reply(this)">返事する</a>
+                                    <a class="delete" href="#" th:href="@{/messages/{id}/delete(id=${message.id})}" onclick="return confirm('本当に削除するのですか？復元できませんよ！')" th:if="${session.user}">削除</a>
+                                </div>
+                            </div>
+                            <!--サブクラスメッセージ-->
+                            <div class="comments" th:if="${#arrays.length(message.replyMessages)}>0">
+                                <div class="comment" th:each="reply : ${message.replyMessages}">
+                                    <a class="avatar">
+                                        <img src="/image/me.jpg" th:src="${reply.avatar}">
+                                    </a>
+                                    <div class="content">
+                                        <a class="author">
+                                            <span th:text="${reply.nickname}">ミケ</span>
+                                            <div class="ui mini basic teal left pointing label m-padded-mini" th:if="${reply.adminMessage}">タマ</div>
+                                            &nbsp;<span th:text=" ${reply.parentNickname} " class="m-teal">@ シロ</span>
+                                        </a>
+                                        <div class="metadata">
+                                            <span class="date" th:text="${#dates.format(reply.createTime,'yyyy-MM-dd HH:mm')}">本日午後 05:42</span>
+                                        </div>
+                                        <div class="text" th:text="${reply.content}">よっしゃー！ </div>
+                                        <div class="actions">
+                                            <a class="reply" data-messageid="1" data-messagenickname="Matt" th:attr="data-messageid=${reply.id},data-messagenickname=${reply.nickname}" onclick="reply(this)">返事する</a>
+                                            <a class="delete" href="#" th:href="@{/messages/{id}/delete(id=${reply.id})}" onclick="return confirm('本当に削除するのですか？復元できませんよ！')" th:if="${session.user}">削除</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <br>
+        <br>
+
+    </div>
+</div>
+
+
+<br>
+<br>
+<br>
+
+
+<!--トップアイコン-->
+<button id="toTop" class="circular ui icon button" style="display: none;">
+    <i class="ui caret up icon"></i>
+</button>
+
+
+
+<!--フッター-->
+<div th:replace="/fragments/footer :: footer-content"></div>
+
+
+
+
+<script>
+
+    $('#blog-message').load("/message");
+
+    //コメントのフォーム認証
+    $('.ui.form').form({
+        fields: {
+            title: {
+                identifier: 'content',
+                rules: [{
+                    type: 'empty',
+                    prompt: 'コメントを入力してください'
+                }
+                ]
+            },
+            content: {
+                identifier: 'nickname',
+                rules: [{
+                    type: 'empty',
+                    prompt: 'あなたの名前を入力してください'
+                }]
+            },
+            type: {
+                identifier: 'email',
+                rules: [{
+                    type: 'email',
+                    prompt: '正しいメールアドレスを入力してください'
+                }]
+            }
+        }
+    });
+
+    // 認証
+    $('#messagepost-btn').click(function () {
+        const boo = $('.ui.form').form('validate form');
+        if (boo) {
+            console.log('認証に成功しました');
+            postData();
+        } else {
+            console.log('認証に失敗しました');
+        }
+    });
+
+    //バックにリクエストを送る
+    function postData() {
+        $.ajax({
+            url:"" , // リクエストパス
+            type:"POST" , //リクエストのメソッド
+            data:{"parentMessage.id":$("[name='parentMessage.id']").val(),"nickname":$("[name='nickname']").val(),"email":$("[name='email']").val(),"content":$("[name='content']").val()},
+            success:function () {
+                alert("成功！");
+                location.reload();
+            },//成功した場合のfuncを返す
+            error:function () {
+                alert("エラーが出ました...")
+            },//リクエストにエラー出た場合に返すfunc
+            dataType:"text"//受け取ったデータのタイプを設定
+        });
+    }
+
+    // フォームをリセット
+    function clearContent() {
+        $("[name='nickname']").val('');
+        $("[name='email']").val('');
+        $("[name='content']").val('');
+        $("[name='parentMessage.id']").val(-1);
+        $("[name='content']").attr("placeholder", "コメントを入力してください...");
+    }
+
+    function reply(obj) {
+        const messageId = $(obj).data('messageid');
+        const messageNickname = $(obj).data('messagenickname');
+        $("[name='content']").attr("placeholder", "@"+messageNickname).focus();
+        $("[name='parentMessage.id']").val(messageId);
+        $(window).scrollTo(0,500);
+    }
+
+</script>
+</body>
+</html>

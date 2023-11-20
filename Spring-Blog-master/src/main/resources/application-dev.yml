@@ -1,0 +1,61 @@
+#開発環境
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://127.0.0.1:3306/blog?useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    hikari:  #hikariデータソースの設定
+      auto-commit: true
+      minimum-idle: 2
+      idle-timeout: 60000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      pool-name: DatebookHikariCP
+      maximum-pool-size: 5
+
+  redis:              #Redisの設定，デフォルトのコネクションプールはlettuce
+    host: 127.0.0.1
+    port: 6379
+    password: #なければ空けてもいい
+    timeout: 1000
+    lettuce:
+      pool:
+       max-active: 8
+       max-idle: 8
+       min-idle: 0
+       max-wait: 1000
+  thymeleaf:  #thymeleaf設定
+    cache: false
+    check-template: false
+    check-template-location: true
+    servlet.content-type: text/html
+    enabled: true
+    encoding: UTF-8
+    mode: HTML
+    prefix: classpath:/templates/
+    suffix: .html
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+
+
+logging: #ログ設定
+  level:
+    root: info
+    com.blog: debug
+  file:
+    path: logs
+
+mybatis: #Mybatis設定
+  type-aliases-package: com.blog.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+pagehelper: #ページ分けプラグイン
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <!-- Standard Meta モバイル端末に適応 -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title th:text="'検索結果 | '+ #{web_Name}"></title>
+    <meta name="keywords" th:content="#{web_Keywords}">
+    <meta name="description" th:content="#{web_Description}">
+    <div th:replace="/fragments/header :: common-js"></div>
+
+
+</head>
+
+<body>
+
+<div id="workingArea">
+
+    <div th:replace="/fragments/header :: menu">
+    </div>
+    <div id="fillBackground" class="" >
+    </div>
+
+    <div class="pageHeadContainer">
+        <img th:src="#{search_Background}" class="ui image backgroundImg">
+        <div class="backgroundLayout">
+            <div class="myInfoDiv" align="center">
+                <div>
+                    <span class="name" th:text="#{web_Name}"></span>
+                </div>
+                <div class="word" >
+                    見たいものが手に入る
+                </div>
+            </div>
+        </div>
+    </div>
+    <div  class="m-container-small m-padded-tb-big animated fadeIn">
+        <div class="ui container">
+            <!--header-->
+            <div class="ui top attached segment">
+                <div class="ui middle aligned two column grid">
+                    <div class="column">
+                        <h3 class="ui teal header">検索結果</h3>
+                    </div>
+                    <div class="right aligned column">
+                        全部で<h2 class="ui orange header m-inline-block m-text-thin" th:text="${pageInfo.total}">14</h2>個
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui top attached teal segment">
+                <div class="ui padded vertical segment m-padded-tb-large" th:each="blog : ${pageInfo.list}">
+                    <div class="ui middle aligned mobile reversed stackable grid">
+                        <div class="eleven wide column">
+                            <h3 class="ui header" ><a href="#" th:href="@{/blog/{id}(id=${blog.id})}" target="_blank" class="m-black" th:text="${blog.title}"></a></h3>
+                            <p class="m-text" th:text="${blog.description}"></p>
+                            <div class="ui grid">
+                                <div class="eleven wide column">
+                                    <div class="ui mini horizontal link list">
+                                        <div class="item">
+                                            <img src="https://unsplash.it/100/100?image=1005" th:src="@{${blog.user.avatar}}" alt="" class="ui avatar image">
+                                            <div class="content"><a href="#" class="header" th:text="${blog.user.nickname}" ></a></div>
+                                        </div>
+                                        <div class="item">
+                                            <i class="calendar icon"></i><span th:text="${#dates.format(blog.updateTime, 'yyyy-MM-dd')}">2020-3-02</span>
+                                        </div>
+                                        <div class="item">
+                                            <i class="eye icon"></i> <span th:text="${blog.views}">2342</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="right aligned five wide column">
+                                    <a href="#" target="_blank" class="ui teal basic label m-padded-tiny m-text-thin" th:text="${blog.type.name}"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="five wide column">
+                            <a href="#" th:href="@{/blog/{id}(id=${blog.id})}" target="_blank">
+                                <img src="https://unsplash.it/800/450?image=1005" th:src="@{${blog.firstPicture}}"  alt="" class="ui rounded image">
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!--footer-->
+            <div class="ui bottom attached segment" >
+                <div class="ui middle aligned two column grid">
+                    <div class="column">
+                        <div class="item"><a class="ui mini purple basic button" th:href="@{/search(query=${query},pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}">前のページ</a></div>
+                    </div>
+                    <div class="right aligned column">
+                        <div class="item"><a class="ui mini purple basic button" th:href="@{/search(query=${query},pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}">次のページ</a></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui segment m-inline-block">
+                <p >現在第<span th:text="${pageInfo.pageNum}"></span>ページ，総<span th:text="${pageInfo.pages}"></span>ページ，全部で<span th:text="${pageInfo.total}"></span>個の記録</p>
+            </div>
+
+        </div>
+    </div>
+    <button id="toTop" class="circular ui icon button" style="display: none;">
+        <i class="ui caret up icon"></i>
+    </button>
+    <!--時間軸内容-->
+</div>
+<!--真ん中の内容-->
+<div th:replace="/fragments/footer :: footer-content"></div>
+
+
+
+
+</body>
+</html>

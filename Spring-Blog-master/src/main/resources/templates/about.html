@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <!-- Standard Meta モバイル設備に適用 -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title th:text="'私について | '+ #{web_Name}"></title>
+    <meta name="keywords" th:content="#{web_Keywords}">
+    <meta name="description" th:content="#{web_Description}">
+
+    <div th:insert="/fragments/header :: common-js"></div>
+</head>
+<body>
+
+<div id="workingArea">
+
+
+    <div th:replace="/fragments/header :: menu"></div>
+
+    <div id="fillBackground" class="" >
+    </div>
+
+    <div class="pageHeadContainer">
+        <img th:src="#{about_Background}" class="ui image backgroundImg">
+        <div class="backgroundLayout">
+            <div class="myInfoDiv" align="center">
+                <div>
+                    <span class="name" th:text="#{web_Name}">ブログ名</span>
+                </div>
+                <div class="word">
+                    曇りなき心、岩をも切り裂く
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="aboutMeContent">
+        <div class="ui raised teal segment">
+            <div class="ui vertical stackable grid container">
+                <div class="row">
+                    <h4 class="ui header aboutMeTitle">私について</h4>
+                </div>
+                <div class="typo ui">
+                    <div class="aboutMe">
+                        <div class="item">
+                            <span class="span header">自己紹介</span>
+                        </div>
+                        <div class="item">
+                            <div class="itemContent">
+                                <p> 26歳、猫好き、Javaシステムエンジニアを目指している男 </p>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <span class="itemHeader">一応勉強した知識:</span>
+                            <div class="itemContent">
+                                <p>JavaSE(Stream、thread、reflectも含めて)</p>
+                                <p>SpringMVC、SpringBoot、Mybatis(plus)などのFramework</p>
+                                <p>HTML、CSS、JavaScriptは最低限度使える</p>
+                                <p>その他 Maven、Git、Docker…とか？</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="blog">
+                        <div class="item">
+                            <span class="span header">ブログ紹介</span>
+                        </div>
+                        <div class="item">
+                            <span class="item">ブログネーム:</span>
+                            <span class="spanContent"> 庄司 </span>
+                        </div>
+                        <div class="item">
+                            <span class="item">ブログアドレス:</span>
+                            <span class="spanContent"> www.ドメインを買うお金がない.jp</span>
+                        </div>
+                        <div class="item">
+                            <span class="item">作成日時:</span>
+                            <span class="spanContent"> 2023-11-08</span>
+                        </div>
+                        <div class="item">
+                            <span class="itemHeader">このブログに使ってる技術:</span>
+                            <div class="itemContent">
+                                <p>1、フロント：html5，css3，js，jQuery，semantic UIとその他のplugin</p>
+                                <p>2、バック：springboot，mybatis，mysql </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="futurePlan">
+                        <div class="item">
+                            <span class="span header">自分の学習プラン</span>
+                        </div>
+                        <div class="item">
+                            <div class="itemContent">
+                                <p>1、以前勉強した知識を固める</p>
+                                <p>2、定期的に復習して不足を補う</p>
+                                <p>3、ちょっとだけでもいいから毎日新しいことを学ぶ</p>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <span class="itemHeader">人生の計画:</span>
+                            <div class="itemContent">
+                                <p>1、生涯プログラミングの勉強を続ける</p>
+                                <p>3、猫二匹を飼う</p>
+                                <p>2、楽しく生活する</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="logUpdate">
+                        <div class="item">
+                            <span class="span header">日誌更新</span>
+                        </div>
+                        <div class="item">
+                            <div class="itemContent">
+                                <p>しばらくはない</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <h4 class="end">底につきました</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end  -->
+
+    <button  id="toTop" class="circular ui icon button" style="display: none;">
+        <i class="ui caret up icon"></i>
+    </button>
+
+
+    <div>
+        <div class="ui tiny modal tipModal">
+            <div class="ui header">お知らせ</div>
+            <div class="content">
+
+            </div>
+            <div class="actions">
+                <div class="ui teal button" id="tipCloseButton">
+                    はい
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="/fragments/footer :: footer-content"></div>
+
+</div>
+
+</body>
+</html>

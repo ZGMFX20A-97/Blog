@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <!-- Standard Meta モバイル端末に適応 -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<!--標記-->
+    <title th:text="#{web_IndexName}"></title>
+    <meta name="keywords" th:content="#{web_Keywords}">
+    <meta name="description" th:content="#{web_Description}">
+
+    <!--標記-->
+    <div th:replace="/fragments/header :: common-js"></div>
+
+</head>
+<body>
+
+<div id="workingArea">
+    <div th:replace="/fragments/header :: menu">
+    </div>
+<!--トップページのヘッダー-->
+    <div class="headContainer">
+        <!--標記-->
+        <img src="/images/background/background5.jpg"  th:src="#{web_Background}" class="ui image backgroundImg" alt="トップページ格言のバックグラウンド画像">
+        <div class="backgroundLayout">
+            <div class="myInfoDiv" align="center">
+                <img class="ui tiny circular image" src="/images/aboutMe/home.jpg" th:src="#{web_Home}" />
+                <br>
+                <div class="myLink">
+                    <a id="instagram" th:href="#{web_instagram}" rel="nofollow" target="_blank" class="ui  circular instagram icon button"
+                       data-tooltip="クリックしてinstagramへ飛びます" data-position="bottom center" data-inverted=""><i class="instagram icon"></i></a>
+                    <a id="facebook" rel="nofollow" target="_blank" class="ui  circular facebook icon button"
+                       data-tooltip="クリックしてfacebookへ飛びます" data-position="bottom center" data-inverted=""><i class="facebook icon"></i></a>
+                    <a th:href="#{web_Github}" rel="nofollow" target="_blank" class="ui circular github icon button"
+                       data-tooltip="クリックしてgithubへ飛びます" data-position="bottom center" data-inverted=""  ><i class="github icon"></i>
+                    </a>
+                </div>
+                <div id="indexNavMenu" class="nav">
+                    <a href="/types" class="ui twitter button">
+                        <i class="book icon"></i>文章</a>
+                    <a href="/tags" class="ui twitter button">
+                        <i class="ui tag icon"></i>タグ</a>
+                    <a href="/message" class="ui twitter button">
+                        <i class="comment alternate icon"></i>Message</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="recommendation">
+        <div class="ui vertical stackable grid container">
+            <div class="ui row">
+                <div class="eight wide column">
+                    <h3 class="ui header myWord">格言</h3>
+                    <p>
+                        If you’re not doing something with your life, then it doesn’t matter how long you live.
+                        人生で何かを成し遂げていないなら、あなたがどれだけ長く生きたかは問題ではない。
+                    </p>
+                    <p>
+                        If you’re doing something with your life, then it doesn’t matter how short your life may be.
+                        人生で何かを成し遂げているなら、あなたの人生がどれだけ短いかは問題ではない。
+                    </p>
+                    <p>
+                        A life is not measured by years lived, but by its usefulness.
+                        人生は年月によって測られるのではなく、有用性によって測られる。
+                    </p>
+                    <p>
+                        If you are giving, loving, serving, helping, encouraging, and adding value to others, then you’re living a life that counts!
+                        もしあなたが与え、愛し、奉仕し、助け、励まし、そして他人に価値を与えているのなら、あなたは価値のある人生を送っている。
+                    </p>
+<!--伝言の画像-->
+                </div>
+                <div class="eight wide column" align="center">
+                    <img class="ui rounded huge image" th:src="#{web_KakuGen}">
+                </div>
+            </div>
+<!--トレンド-->
+
+            <div class="row titleDiv">
+                <a href="/category" class="ui header title"><i class="red fire icon"></i>トレンド</a>
+            </div>
+            <div class="row hotArticles">
+                <div class="four wide column hotArticle" th:each="hotArticle:${hotBlogs}">
+                    <a th:href="@{/blog/{id}(id=${hotArticle.id})}">
+                        <div class="ui special cards">
+                            <div class="ui fluid raised link card">
+
+                                <div class="blurring dimmable image" >
+                                    <img src="" th:src="${hotArticle.firstPicture}"  >
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+<!--厳選メッセージ-->
+            <div class="row titleDiv">
+                <a href="/message" class="ui header title"><i class="orange codiepie icon"></i>最新メッセージ</a>
+            </div>
+            <div class="row comments">
+                <div class="four wide column comment" th:each="message : ${messages}">
+                    <a class="ui fluid raised link card" href="/message" >
+                        <div class="content">
+                            <div class="header" th:text="${message.nickname}">ニックネーム</div>
+                            <div class="meta">
+                                <span class="right floated time" th:text="${#dates.format(message.createTime, 'yyyy-MM-dd')}">作成時間</span>
+                                <span class="comment">comment</span>
+                            </div>
+                            <div class="description" th:text="${message.content}">
+                              コメント内容
+                            </div>
+                        </div>
+                        <div class="extra content">
+                            <div class="right floated author">
+                                <img class="ui avatar image" src="https://www.xiaoxuya.top/img/user/190.jpg" th:text="${message.nickname}">
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+<!--おすすめ-->
+            <div class="row recommendTitleDiv">
+                <div class="recommendArticlesTitle">おすすめ</div>
+            </div>
+            <div class="three column row recommendArticles">
+                <div class="column recommendArticle" th:each="recommendBlog: ${recommendBlogs}">
+                    <div class="ui fluid raised link card">
+                        <a class="image" th:href="@{/blog/{id}(id=${recommendBlog.id})}">
+                            <img src="" th:src="${recommendBlog.firstPicture}">
+                        </a>
+                        <div class="ui circular articleInfo">
+                            <div class="articleTitle" th:text="${recommendBlog.title}">おすすめのタイトル</div>
+                            <div class="description">
+                                <span class="tipSpan"><i class="ui eye icon"></i><span class="viewNumber" th:text="${recommendBlog.views}">閲覧数</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+<!--最新文章-->
+    <div class="newArticles">
+        <div class="ui vertical stackable grid container">
+            <div class="row titleDiv">
+                <a href="/types" class="ui header title"><i class="green leaf icon"></i>最新文章</a>
+            </div>
+            <div class="row ui raised link card segment article" th:each="blog : ${pageInfo.list}">
+                <div class="five wide column">
+                    <img class=" ui rounded image" src="" th:src="${blog.firstPicture}">
+                </div>
+                <div class="eleven wide column">
+                    <div class="content">
+                        <a href="#" th:href="@{/blog/{id}(id=${blog.id})}"  class="ui teal right ribbon label" th:text="${blog.flag}">
+                        </a>
+                        <div class="articleHeader"><a th:href="@{/blog/{id}(id=${blog.id})}" th:text="${blog.title}"></a>
+                        </div>
+                        <div class="overView">
+                            <a th:href="@{/blog/{id}(id=${blog.id})}" th:text="${blog.description}"></a>
+                        </div>
+                        <div class="description">
+                            <span><i class="ui user circle icon"></i>作者: <span class="author" th:text="${blog.user.nickname}"></span></span>
+                            <span><i class="ui clock outline icon"></i>時間: <span class="publishDate" th:text="${#dates.format(blog.updateTime, 'yyyy-MM-dd')}"></span></span>
+                            <span><i class="ui tag icon"></i>タグ:
+                                         <span class="tags" >
+                                        <a href="#" th:href="@{/types/{id}(id=${blog.type.id})}" target="_blank" class="ui blue basic label m-padded-tiny m-text-thin" th:text="${blog.type.name}"></a>
+                                         </span>
+                                 </span>
+                            <span><i class="ui eye icon"></i>閲覧数<span  class="viewNumber" th:text="${blog.views}"></span></span>
+                        </div>
+                    </div>
+       </div>
+            </div>
+
+<!-- ページ分け   -->
+            <div align="center" class="pagination paginationDiv">
+                <div class="ui middle aligned two column grid">
+                    <div class="column">
+                        <div class="item"><a class="ui mini blue basic button" th:href="@{/(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}">前のページ</a></div>
+                    </div>
+                    <div class="right aligned column">
+                        <div class="item"><a class="ui mini blue basic button" th:href="@{/(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}">次のページ</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="toTop" class="circular ui icon button" style="display: none;">
+        <i class="ui caret up icon"></i>
+    </button>
+
+    <div>
+        <div class="ui tiny modal tipModal">
+            <div class="ui header">お知らせ</div>
+            <div class="content">
+
+            </div>
+            <div class="actions">
+                <div class="ui teal button" id="tipCloseButton">
+                    はい
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div th:replace="/fragments/footer :: footer-content"></div>
+</div>
+
+
+</body>
+</html>

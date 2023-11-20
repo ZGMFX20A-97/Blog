@@ -1,0 +1,22 @@
+spring:            #グローバルセッティング
+  thymeleaf:
+    cache: true
+  profiles:
+    active: dev
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+
+server:
+  tomcat:
+    remote-ip-header: x-forwarded-for
+    protocol-header: x-forwarded-proto
+    port-header: X-Forwarded-Port
+    use-forward-headers: true
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+  port: 8080
+
+
